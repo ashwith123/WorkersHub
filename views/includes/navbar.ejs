@@ -1,0 +1,26 @@
+<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse" id="navbarId">
+      <div class="navbar-nav">
+        <a class="nav-link" href="/listings">
+          <div id="icon"><i class="fa-solid fa-house"></i> WanderLust</div>
+        </a>
+        <%if(user){%>
+        <a class="nav-link" href="/listings/new" id="addNewListing"
+          ><i class="fa-solid fa-square-plus me-2" style="color: white"></i>Add
+          Your Home</a
+        >
+        <%}%>
+      </div>
+      <div class="navbar-nav ms-auto">
+        <% if(user) {%>
+        <a class="nav-link" href="/logout">logout</a>
+        <%}else{%>
+        <a class="nav-link" href="/login">Login</a>
+        <a class="nav-link active" href="/signup">Signup</a>
+
+        <%}%>
+      </div>
+    </div>
+  </div>
+</nav>
