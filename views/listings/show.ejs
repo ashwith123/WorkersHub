@@ -1,0 +1,91 @@
+<div class="row mt-3 show">
+  <div class="col-8 offset-2">
+    <h1><%= listing.title %></h1>
+  </div>
+
+  <div class="col-8 offset-2">
+    <div class="card">
+      <div class="card-body">
+
+        <ul class="list-unstyled">
+          <li>
+            <b>Posted By:</b>
+            <%= listing.postedBy ? listing.postedBy.username : "Unknown" %>
+          </li>
+
+          <li><b>Description:</b> <%= listing.description %></li>
+
+          <li><b>Work Type:</b> <%= listing.workType %></li>
+
+          <li>
+            <b>Building:</b>
+            <%= listing.buildingType %>,
+            <%= listing.floors %> floors,
+            <%= listing.areaSqFt %> sq.ft
+          </li>
+
+          <li>
+            <b>Location:</b>
+            <%= listing.area %>, <%= listing.city %>
+            <% if (listing.landmark) { %>
+              (Near <%= listing.landmark %>)
+            <% } %>
+          </li>
+
+          <li>
+            <b>Workers Required:</b> <%= listing.workersRequired %>
+            (<%= listing.skillLevel %>)
+          </li>
+
+          <li>
+            <b>Wage:</b> ₹<%= listing.wagePerDay %> / day
+            (<%= listing.paymentType %>)
+          </li>
+
+          <li>
+            <b>Food Provided:</b>
+            <%= listing.foodProvided ? "Yes" : "No" %>
+          </li>
+
+          <li>
+            <b>Start Date:</b>
+            <%= listing.startDate.toDateString() %>
+          </li>
+
+          <li>
+            <b>Duration:</b>
+            <%= listing.durationDays %> days
+          </li>
+         
+
+        </ul>
+
+        <% if (
+          currUser &&
+          listing.postedBy &&
+          listing.postedBy._id.toString() === currUser._id.toString()
+        ) { %>
+          <div class="row mt-3">
+            <div class="col-auto">
+              <a href="/listings/<%= listing._id %>/edit">
+                <button class="btn btn-danger">Edit</button>
+              </a>
+            </div>
+
+            <div class="col-auto">
+              <form
+                action="/listings/<%= listing._id %>?_method=DELETE"
+                method="POST"
+              >
+                <button class="btn btn-danger">
+                  Delete Listing
+                </button>
+              </form>
+            </div>
+          </div>
+        <% } %>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,224 @@
+
+<div class="row">
+  <div class="col-8 offset-2">
+    <h1>Edit Job Listing</h1>
+
+    <form
+      method="POST"
+      action="/listings/<%= listing._id %>?_method=PUT"
+      class="needs-validation"
+      novalidate
+    >
+
+      <!-- TITLE -->
+      <div class="mb-3">
+        <label class="form-label">Job Title</label>
+        <input
+          type="text"
+          name="job[title]"
+          class="form-control"
+          value="<%= listing.title %>"
+          required
+        />
+      </div>
+
+      <!-- DESCRIPTION -->
+      <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea
+          name="job[description]"
+          class="form-control"
+          rows="4"
+          required
+        ><%= listing.description %></textarea>
+      </div>
+
+      <!-- WORK TYPE -->
+      <div class="mb-3">
+        <label class="form-label">Work Type</label>
+        <select name="job[workType]" class="form-control" required>
+          <% ["Masonry","Plumbing","Electrical","Painting","Carpentry","Other"].forEach(type => { %>
+            <option
+              value="<%= type %>"
+              <%= listing.workType === type ? "selected" : "" %>
+            >
+              <%= type %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <!-- BUILDING DETAILS -->
+      <div class="row">
+        <div class="mb-3 col-md-4">
+          <label class="form-label">Building Type</label>
+          <select name="job[buildingType]" class="form-control" required>
+            <% ["Independent House","Apartment","Commercial"].forEach(type => { %>
+              <option
+                value="<%= type %>"
+                <%= listing.buildingType === type ? "selected" : "" %>
+              >
+                <%= type %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="mb-3 col-md-4">
+          <label class="form-label">Floors</label>
+          <input
+            type="number"
+            name="job[floors]"
+            class="form-control"
+            value="<%= listing.floors %>"
+            min="1"
+            required
+          />
+        </div>
+
+        <div class="mb-3 col-md-4">
+          <label class="form-label">Area (sq.ft)</label>
+          <input
+            type="number"
+            name="job[areaSqFt]"
+            class="form-control"
+            value="<%= listing.areaSqFt %>"
+            min="100"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- LOCATION -->
+      <div class="row">
+        <div class="mb-3 col-md-4">
+          <label class="form-label">City</label>
+          <input
+            type="text"
+            name="job[city]"
+            class="form-control"
+            value="<%= listing.city %>"
+            required
+          />
+        </div>
+
+        <div class="mb-3 col-md-4">
+          <label class="form-label">Area</label>
+          <input
+            type="text"
+            name="job[area]"
+            class="form-control"
+            value="<%= listing.area %>"
+            required
+          />
+        </div>
+
+        <div class="mb-3 col-md-4">
+          <label class="form-label">Landmark</label>
+          <input
+            type="text"
+            name="job[landmark]"
+            class="form-control"
+            value="<%= listing.landmark || "" %>"
+          />
+        </div>
+      </div>
+
+      <!-- WORKERS -->
+      <div class="row">
+        <div class="mb-3 col-md-6">
+          <label class="form-label">Workers Required</label>
+          <input
+            type="number"
+            name="job[workersRequired]"
+            class="form-control"
+            value="<%= listing.workersRequired %>"
+            min="1"
+            required
+          />
+        </div>
+
+        <div class="mb-3 col-md-6">
+          <label class="form-label">Skill Level</label>
+          <select name="job[skillLevel]" class="form-control" required>
+            <% ["Helper","Skilled","Supervisor"].forEach(level => { %>
+              <option
+                value="<%= level %>"
+                <%= listing.skillLevel === level ? "selected" : "" %>
+              >
+                <%= level %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+      </div>
+
+      <!-- PAYMENT -->
+      <div class="row">
+        <div class="mb-3 col-md-4">
+          <label class="form-label">Wage / Day (₹)</label>
+          <input
+            type="number"
+            name="job[wagePerDay]"
+            class="form-control"
+            value="<%= listing.wagePerDay %>"
+            min="100"
+            required
+          />
+        </div>
+
+        <div class="mb-3 col-md-4">
+          <label class="form-label">Payment Type</label>
+          <select name="job[paymentType]" class="form-control" required>
+            <% ["Daily","Weekly","Contract"].forEach(type => { %>
+              <option
+                value="<%= type %>"
+                <%= listing.paymentType === type ? "selected" : "" %>
+              >
+                <%= type %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="mb-3 col-md-4">
+          <label class="form-label">Food Provided</label>
+          <select name="job[foodProvided]" class="form-control">
+            <option value="true" <%= listing.foodProvided ? "selected" : "" %>>Yes</option>
+            <option value="false" <%= !listing.foodProvided ? "selected" : "" %>>No</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- TIMELINE -->
+      <div class="row">
+        <div class="mb-3 col-md-6">
+          <label class="form-label">Start Date</label>
+          <input
+            type="date"
+            name="job[startDate]"
+            class="form-control"
+            value="<%= listing.startDate.toISOString().split('T')[0] %>"
+            required
+          />
+        </div>
+
+        <div class="mb-3 col-md-6">
+          <label class="form-label">Duration (days)</label>
+          <input
+            type="number"
+            name="job[durationDays]"
+            class="form-control"
+            value="<%= listing.durationDays %>"
+            min="1"
+            required
+          />
+        </div>
+      </div>
+
+      <button class="btn btn-danger mt-3">
+        Update Listing
+      </button>
+    </form>
+  </div>
+</div>

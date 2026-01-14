@@ -1,6 +1,14 @@
 
 <body>
 
-    <p>Welcome, <%= user.username %>!</p>
+    <h1>Listings</h1>
+    <form action="/addListing" method="get">
+        <button type="submit">Add New Listing</button>
+    </form>
+    <ul>
+        <% listings.forEach(function(listing) { %>
+        <li><a href="/listings/<%= listing.id %>"><%= listing.title %></a></li>
+        <% }); %>
+    </ul>
     
 </body>
