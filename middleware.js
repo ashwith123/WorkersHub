@@ -1,30 +1,33 @@
 const jwt = require("jsonwebtoken");
-const User = require("./models/userModel");
+const User=require("./models/userModel")
 
-const requireAuth = async (req, res, next) => {
+const setCurrentUser = async (req, res, next) => {
   const token = req.cookies.token;
 
   if (!token) {
-    console.log("No token found");
-    return res.redirect("/login");
+    req.user = null;
+    return next();
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-     const user = await User.findById(decoded.userId);
-
-    if (!user) {
-      return res.redirect("/login");
-    }
-
-    req.user = user; 
+    const user = await User.findById(decoded.userId);
+    req.user = user || null;
     req.userId = decoded.userId;
-    next();
+
   } catch (err) {
-    console.log(err);
+    req.user = null;
+  }
+
+  next();
+};  
+
+const requireAuth = (req, res, next) => {
+  if (!req.user) {
     return res.redirect("/login");
   }
+  next();
 };
 
-module.exports = requireAuth;
+module.exports = {setCurrentUser,requireAuth};
+

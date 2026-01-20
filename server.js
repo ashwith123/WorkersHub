@@ -11,10 +11,10 @@ const bcrypt=require('bcrypt');
 const path = require("path");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
-const requireAuth = require("./middleware");
 const expressLayouts = require("express-ejs-layouts");
 const Listing = require("./models/postModel");
 const methodOverride = require("method-override");
+const {setCurrentUser,requireAuth}=require('./middleware');
 
 app.use(methodOverride('_method'));
 app.use(expressLayouts);
@@ -25,16 +25,17 @@ app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs')
 app.set("layout", "layout/boilerplate");
 app.set("views", path.join(__dirname, "views"));
+app.use(setCurrentUser);
 app.use((req, res, next) => {
-  res.locals.user = null;       
+  res.locals.user = req.user || null;       
   res.locals.success = null;
   res.locals.error = null;
   next();
 });
 
-app.get("/",async (req,res)=>{
+app.get("/",requireAuth,async (req,res)=>{
     const allListings = await Listing.find();
-    res.render("./listings/index" ,{title:"Home",listings:allListings});
+    res.render("./listings/index" ,{listings:allListings});
 });
 
 app.get("/login",(req,res)=>{
@@ -272,7 +273,7 @@ app.put("/listings/:id", requireAuth, async (req, res) => {
 
 app.get("/logout", (req, res) => {
   res.clearCookie("token");
-  res.redirect("./user/login");
+  res.redirect("./login");
 });
 
 

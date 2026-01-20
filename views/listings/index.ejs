@@ -5,6 +5,7 @@
     <form action="/addListing" method="get">
         <button type="submit">Add New Listing</button>
     </form>
+    <h1><% if (user) { %>Welcome, <%= user.name %>!<% } else { %>Please log in to view listings.<% } %></h1>
     <ul>
         <% listings.forEach(function(listing) { %>
         <li><a href="/listings/<%= listing.id %>"><%= listing.title %></a></li>
