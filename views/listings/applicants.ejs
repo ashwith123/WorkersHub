@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Applicants - <%= job.title %></title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+
+    h1 {
+      margin-bottom: 5px;
+    }
+
+    .job-meta {
+      color: #555;
+      margin-bottom: 25px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .status {
+      font-weight: bold;
+      text-transform: capitalize;
+    }
+
+    .pending { color: orange; }
+    .accepted { color: green; }
+    .rejected { color: red; }
+
+    .actions form {
+      display: inline;
+    }
+
+    .actions button {
+      padding: 5px 10px;
+      margin-right: 5px;
+      cursor: pointer;
+    }
+
+    .empty {
+      color: #777;
+      margin-top: 20px;
+    }
+
+    .back {
+      margin-top: 30px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== PAGE HEADER ===== -->
+  <h1>Applicants</h1>
+  <div class="job-meta">
+    <strong>Job:</strong> <%= job.title %> |
+    <strong>City:</strong> <%= job.city %> |
+    <strong>Work:</strong> <%= job.workType %> |
+    <strong>Workers Required:</strong> <%= job.workersRequired %>
+  </div>
+
+  <% if (!job.applications || job.applications.length === 0) { %>
+    <p class="empty">No workers have applied for this job yet.</p>
+  <% } else { %>
+
+    <%console.log(job)%>
+
+  <!-- ===== APPLICANTS TABLE ===== -->
+  <table>
+    <thead>
+      <tr>
+        <th>Worker</th>
+        <th>Applied On</th>
+        <th>Status</th>
+        <th>Action</th> 
+      </tr>
+    </thead>
+
+    <tbody>
+      <% job.applications.forEach(app => { %>
+        <tr>
+          <td>
+            <a href="/profile/<%= app.applicant._id %>"><%= app.applicant.username %></a>
+          </td>
+
+            <td>
+                <%= new Date(app.createdAt).toLocaleDateString() %>
+            </td>
+
+          <td class="status <%= app.status %>">
+            <%= app.status %>
+          </td>
+
+          <td class="actions">
+            <% if (app.status === "Applied") { %>
+
+              <form method="POST"
+                    action="/listings/<%= job._id %>/applicants/<%= app.applicant._id %>/accept">
+                <button type="submit">Accept</button>
+              </form>
+
+              <form method="POST"
+                    action="/listings/<%= job._id %>/applicants/<%= app.applicant._id %>/reject">
+                <button type="submit">Reject</button>
+              </form>
+
+            <% } else { %>
+              —
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <% } %>
+
+  <a class="back" href="/profile">← Back to Profile</a>
+
+</body>
+</html>

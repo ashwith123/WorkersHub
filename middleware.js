@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User=require("./models/userModel")
+const User=require("./models/userModel");
 
 const setCurrentUser = async (req, res, next) => {
   const token = req.cookies.token;
@@ -29,5 +29,14 @@ const requireAuth = (req, res, next) => {
   next();
 };
 
-module.exports = {setCurrentUser,requireAuth};
+const isBuilder = async(req, res, next) => {
+    if (!req.user || req.user.role !== "BUILDER") {
+        return res.status(403).send("Access denied. Builders only.");
+    }
+    next();
+};
+
+
+
+module.exports = {setCurrentUser,requireAuth,isBuilder};
 

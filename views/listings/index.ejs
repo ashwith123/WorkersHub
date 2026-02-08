@@ -2,9 +2,16 @@
 <body>
 
     <h1>Listings</h1>
+
+    <% if (user && user.role === "BUILDER") { %>
     <form action="/addListing" method="get">
         <button type="submit">Add New Listing</button>
     </form>
+    <% } %>
+
+        <h1>role of user is <%= user.role %></h1>
+
+
     <h1><% if (user) { %>Welcome, <%= user.name %>!<% } else { %>Please log in to view listings.<% } %></h1>
     <ul>
         <% listings.forEach(function(listing) { %>

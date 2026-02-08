@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
 
-const jobPostSchema = new mongoose.Schema(
+const jobSchema = new mongoose.Schema(
   {
     // -------- BASIC WORK INFO --------
     title: {
       type: String,
       required: true,
       trim: true,
-      minlength: 5
     },
 
     image: {
@@ -18,7 +17,6 @@ const jobPostSchema = new mongoose.Schema(
     description: {
       type: String,
       required: true,
-      minlength: 20
     },
 
     workType: {
@@ -113,7 +111,12 @@ const jobPostSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
       index: true
-    }
+    },
+
+    applications:[{
+      applicant: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      status: { type: String, enum: ["Applied", "Accepted", "Rejected"], default: "Applied" }
+    }]
   },
   {
     timestamps: true // adds createdAt & updatedAt
@@ -121,6 +124,6 @@ const jobPostSchema = new mongoose.Schema(
 );
 
 // -------- COMPOUND INDEX (IMPORTANT) --------
-jobPostSchema.index({ city: 1, workType: 1, isActive: 1 });
+jobSchema.index({ city: 1, workType: 1, isActive: 1 });
 
-module.exports = mongoose.model("JobPost", jobPostSchema);
+module.exports = mongoose.model("Job", jobSchema);

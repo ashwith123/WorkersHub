@@ -6,7 +6,11 @@
   <div class="col-8 offset-2">
     <div class="card">
       <div class="card-body">
-
+        <% if (listing.image && listing.image.url) { %>
+          <div class="job-image">
+              <img src="<%= listing.image.url %>" alt="Building image">
+          </div>
+         <% } %>
         <ul class="list-unstyled">
           <li>
             <b>Posted By:</b>
@@ -85,6 +89,12 @@
           </div>
         <% } %>
 
+        <%if(user && user.role === "WORKER") { %>
+
+          <form action="/listings/<%= listing._id %>/apply" method="POST">
+            <button class="btn btn-primary">Apply</button>
+          </form>
+        <% } %>
       </div>
     </div>
   </div>
