@@ -6,11 +6,13 @@
   <div class="col-8 offset-2">
     <div class="card">
       <div class="card-body">
-        <% if (listing.image && listing.image.url) { %>
           <div class="job-image">
-              <img src="<%= listing.image.url %>" alt="Building image">
+<img 
+  src="<%= listing.image && listing.image.url 
+        ? listing.image.url 
+        : 'https://res.cloudinary.com/dzfbgnkd8/image/upload/v1771099002/Listings/wiz5nqn8zlf89vmpwz3i.png' %>" 
+  alt="Building image" style="max-width: 500px; height: 300px; ">
           </div>
-         <% } %>
         <ul class="list-unstyled">
           <li>
             <b>Posted By:</b>

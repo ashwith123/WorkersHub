@@ -11,7 +11,7 @@
     <form
       method="post"
       action="/addListing"
-      class="needs-validation"
+      class="needs-validation"enctype="multipart/form-data"
       novalidate
     >
       <div class="form-group">
@@ -216,7 +216,7 @@
         <input
           type="file"
           class="form-control"
-          name="image"
+          name="job[image]"
           accept="image/*"
         />
       </div>

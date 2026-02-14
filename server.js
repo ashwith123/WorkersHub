@@ -15,6 +15,9 @@ const expressLayouts = require("express-ejs-layouts");
 const Listing = require("./models/jobModel");
 const methodOverride = require("method-override");
 const {setCurrentUser,requireAuth,isBuilder}=require('./middleware');
+const multer = require("multer");
+const { storage } = require("./lib/cloudinary");
+const upload = multer({ storage });
 
 app.use(methodOverride('_method'));
 app.use(expressLayouts);
@@ -25,6 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs')
 app.set("layout", "layout/boilerplate");
 app.set("views", path.join(__dirname, "views"));
+app.use(express.static("public"));
 app.use(setCurrentUser);
 app.use((req, res, next) => {
   res.locals.user = req.user || null;       
@@ -128,11 +132,21 @@ app.get("/addListing",requireAuth,isBuilder,async (req,res)=>{
     res.render("./listings/addListing.ejs", { user, error: null });
 });
 
-app.post("/addListing",requireAuth,isBuilder,async (req, res) => {
+app.post("/addListing",requireAuth,isBuilder,upload.single("job[image]"),async (req, res) => {
   try {
     const jobData = req.body.job;
+   
 
-    const postedBy = req.userId;
+     if (req.file) {
+        jobData.image = {
+          url: req.file.path,
+          filename: req.file.filename,
+        };
+      } else {
+        console.log("no image is uploaded");
+         delete jobData.image;
+      }
+
 
      if (!jobData) {
       return res.status(400).render("./listings/addListing", {
@@ -141,7 +155,6 @@ app.post("/addListing",requireAuth,isBuilder,async (req, res) => {
       });
     }
 
-    // 2️⃣ Required fields check
     const requiredFields = [
       "title",
       "description",
@@ -168,6 +181,8 @@ app.post("/addListing",requireAuth,isBuilder,async (req, res) => {
       }
     }
 
+    const postedBy = req.userId;
+
     const newJob = await new Listing({
       ...jobData,
       postedBy
@@ -179,6 +194,7 @@ app.post("/addListing",requireAuth,isBuilder,async (req, res) => {
     res.redirect("/");
 
   } catch (error) {
+    console.log(error);
     res.status(500).render("./listings/addListing", {
       error: "Server error. Please try again later.",
       job: req.body.job || {}
@@ -191,7 +207,7 @@ app.get("/listings/:id",requireAuth,async (req, res) => {
     const listingId = req.params.id;
 
     const listing = await Listing.findById(listingId)
-      .populate("postedBy"); // 👈 REQUIRED for show.ejs
+      .populate("postedBy"); 
 
     if (!listing) {
       return res.status(404).render("listings/index", {
@@ -371,6 +387,7 @@ app.get("/listings/:id/applicants", requireAuth, async (req, res) => {
     });
   }
 });
+
 
 app.post(
   "/listings/:jobId/applicants/:workerId/accept",
