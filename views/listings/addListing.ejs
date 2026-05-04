@@ -1,3 +1,50 @@
+<script>
+let fieldIndex = 0;
+
+function addField() {
+  const container = document.getElementById("customFields");
+
+  const div = document.createElement("div");
+  div.className = "row mb-3 align-items-end";
+
+  div.innerHTML = `
+    <div class="col-5">
+      <label for="customField${fieldIndex}" class="form-label">
+        New Field
+      </label>
+      <input type="text"
+             id="customField${fieldIndex}"
+             class="form-control"
+             name="job[customFields][${fieldIndex}][label]"
+             placeholder="e.g. Cement Grade"
+             required />
+    </div>
+
+    <div class="col-5">
+      <label for="customInfo${fieldIndex}" class="form-label">
+        Field Information
+      </label>
+      <input type="text"
+             id="customInfo${fieldIndex}"
+             class="form-control"
+             name="job[customFields][${fieldIndex}][value]"
+             placeholder="e.g. 53 Grade"
+             required />
+    </div>
+
+    <div class="col-2">
+      <button type="button"
+              class="btn btn-danger w-100"
+              onclick="this.closest('.row').remove()">
+        Remove
+      </button>
+    </div>
+  `;
+
+  container.appendChild(div);
+  fieldIndex++;
+}
+</script>
 <body>
   <div class="col-8 offset-2">
     <br /><br />
@@ -8,224 +55,141 @@
         <%= error %>
         </div>
         <% } %>
-    <form
-      method="post"
+    <form method="post"
       action="/addListing"
-      class="needs-validation"enctype="multipart/form-data"
-      novalidate
-    >
-      <div class="form-group">
-        <label for="title">Job Title</label>
-        <input
-          name="job[title]"
-          class="form-control"
-          placeholder="e.g. 2BHK Plastering Work"
-          id="title"
-          required
-        />
-        <div class="invalid-feedback">Title is required.</div>
-      </div>
+      enctype="multipart/form-data"
+      class="needs-validation"
+      novalidate>
+<!-- Title -->
+<div class="mb-3">
+  <label for="title" class="form-label">Job Title</label>
+  <input id="title" name="job[title]" class="form-control" required />
+</div>
 
-      <div class="form-group">
-        <label for="description">Work Description</label>
-        <textarea
-          class="form-control"
-          name="job[description]"
-          placeholder="Explain the work clearly"
-          id="description"
-          rows="4"
-          required
-        ></textarea>
-        <div class="invalid-feedback">Description is required.</div>
-      </div>
+<!-- Description -->
+<div class="mb-3">
+  <label for="description" class="form-label">Work Description</label>
+  <textarea id="description"
+            name="job[description]"
+            class="form-control"
+            rows="4"
+            required></textarea>
+</div>
 
-      <div class="form-group">
-        <label for="workType">Work Type</label>
-        <select
-          class="form-control"
+<!-- Work Type -->
+<div class="mb-3">
+  <label for="workType" class="form-label">Work Type</label>
+  <select id="workType"
           name="job[workType]"
-          id="workType"
-          required
-        >
-          <option value="">Select work type</option>
-          <option>Masonry</option>
-          <option>Plumbing</option>
-          <option>Electrical</option>
-          <option>Painting</option>
-          <option>Carpentry</option>
-          <option>Other</option>
-        </select>
-        <div class="invalid-feedback">Select work type.</div>
-      </div>
+          class="form-select"
+          required>
+    <option value="">Select</option>
+    <option>Masonry</option>
+    <option>Plumbing</option>
+    <option>Electrical</option>
+    <option>Painting</option>
+    <option>Carpentry</option>
+    <option>Other</option>
+  </select>
+</div>
 
-      <div class="row">
-        <div class="form-group col-4">
-          <label>Building Type</label>
-          <select
-            class="form-control"
-            name="job[buildingType]"
-            required
-          >
-            <option value="">Select</option>
-            <option>Independent House</option>
-            <option>Apartment</option>
-            <option>Commercial</option>
-          </select>
-        </div>
+<!-- Location -->
+<div class="row mb-3">
+  <div class="col">
+    <label for="city" class="form-label">City</label>
+    <input id="city"
+           name="job[location][city]"
+           class="form-control"
+           required />
+  </div>
 
-        <div class="form-group col-4">
-          <label>Floors</label>
-          <input
-            type="number"
-            class="form-control"
-            name="job[floors]"
-            min="1"
-            required
-          />
-        </div>
+  <div class="col">
+    <label for="area" class="form-label">Area</label>
+    <input id="area"
+           name="job[location][area]"
+           class="form-control" />
+  </div>
+</div>
 
-        <div class="form-group col-4">
-          <label>Area (sq.ft)</label>
-          <input
-            type="number"
-            class="form-control"
-            name="job[areaSqFt]"
-            min="100"
-            required
-          />
-        </div>
-      </div>
+<!-- Workers -->
+<div class="mb-3">
+  <label for="workersRequired" class="form-label">
+    Workers Required
+  </label>
+  <input type="number"
+         id="workersRequired"
+         name="job[workersRequired]"
+         class="form-control"
+         min="1" />
+</div>
 
-      <div class="row">
-        <div class="form-group col-4">
-          <label>City</label>
-          <input
-            class="form-control"
-            name="job[city]"
-            required
-          />
-        </div>
+<!-- Wage -->
+<div class="mb-3">
+  <label for="wagePerDay" class="form-label">
+    Wage per Day (₹)
+  </label>
+  <input type="number"
+         id="wagePerDay"
+         name="job[wagePerDay]"
+         class="form-control"
+         required />
+</div>
 
-        <div class="form-group col-4">
-          <label>Area</label>
-          <input
-            class="form-control"
-            name="job[area]"
-            required
-          />
-        </div>
+<!-- Payment -->
+<div class="mb-3">
+  <label for="paymentType" class="form-label">
+    Payment Type
+  </label>
+  <select id="paymentType"
+          name="job[paymentType]"
+          class="form-select"
+          required>
+    <option>Daily</option>
+    <option>Weekly</option>
+    <option>Contract</option>
+  </select>
+</div>
 
-        <div class="form-group col-4">
-          <label>Landmark</label>
-          <input
-            class="form-control"
-            name="job[landmark]"
-          />
-        </div>
-      </div>
+<!-- Start Date -->
+<div class="mb-3">
+  <label for="startDate" class="form-label">
+    Start Date
+  </label>
+  <input type="date"
+         id="startDate"
+         name="job[startDate]"
+         class="form-control" />
+</div>
 
-      <div class="row">
-        <div class="form-group col-6">
-          <label>Workers Required</label>
-          <input
-            type="number"
-            class="form-control"
-            name="job[workersRequired]"
-            min="1"
-            required
-          />
-        </div>
+<!-- Image -->
+<div class="mb-3">
+  <label for="image" class="form-label">
+    Upload Image
+  </label>
+  <input type="file"
+         id="image"
+         name="job[image]"
+         class="form-control"
+         accept="image/*" />
+</div>
+  <!-- Custom Fields -->
+  <hr>
+<h5>Additional Requirements (Optional)</h5>
+<p class="text-muted">
+  Add any extra details specific to this job.
+</p>
 
-        <div class="form-group col-6">
-          <label>Skill Level</label>
-          <select
-            class="form-control"
-            name="job[skillLevel]"
-            required
-          >
-            <option value="">Select</option>
-            <option>Helper</option>
-            <option>Skilled</option>
-            <option>Supervisor</option>
-          </select>
-        </div>
-      </div>
+<div id="customFields"></div>
 
-      <div class="row">
-        <div class="form-group col-4">
-          <label>Wage / Day (₹)</label>
-          <input
-            type="number"
-            class="form-control"
-            name="job[wagePerDay]"
-            min="100"
-            required
-          />
-        </div>
+<button type="button" class="btn btn-secondary" onclick="addField()">
+  + Add Requirement
+</button>
 
-        <div class="form-group col-4">
-          <label>Payment Type</label>
-          <select
-            class="form-control"
-            name="job[paymentType]"
-            required
-          >
-            <option>Daily</option>
-            <option>Weekly</option>
-            <option>Contract</option>
-          </select>
-        </div>
-
-        <div class="form-group col-4">
-          <label>Food Provided</label>
-          <select
-            class="form-control"
-            name="job[foodProvided]"
-          >
-            <option value="false">No</option>
-            <option value="true">Yes</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="form-group col-6">
-          <label>Start Date</label>
-          <input
-            type="date"
-            class="form-control"
-            name="job[startDate]"
-            required
-          />
-        </div>
-
-        <div class="form-group col-6">
-          <label>Duration (days)</label>
-          <input
-            type="number"
-            class="form-control"
-            name="job[durationDays]"
-            min="1"
-            required
-          />
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Upload Building Photos</label>
-        <input
-          type="file"
-          class="form-control"
-          name="job[image]"
-          accept="image/*"
-        />
-      </div>
-
-      <br />
-
-      <button class="btn btn-dark mb-2">
-        Create Job Post
-      </button>
-    </form>
+<div class="mt-4">
+  <button type="submit" class="btn btn-dark w-100">
+    Create Job Post
+  </button>
+</div>
+</form>
   </div>
 </body>

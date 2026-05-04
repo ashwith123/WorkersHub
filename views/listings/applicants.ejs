@@ -121,9 +121,13 @@
                 <button type="submit">Reject</button>
               </form>
 
-            <% } else { %>
-              —
+            <% } else if(app.status==="Accepted"){ %>
+                <form method="POST"
+                    action="/listings/<%= job._id %>/applicants/<%= app.applicant._id %>/completed">
+                <button type="submit">Mark as Completed</button>
+              </form>
             <% } %>
+              
           </td>
         </tr>
       <% }) %>

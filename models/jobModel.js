@@ -1,17 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const jobSchema = new mongoose.Schema(
   {
-    // -------- BASIC WORK INFO --------
     title: {
       type: String,
       required: true,
       trim: true,
-    },
-
-    image: {
-    url: String,
-    filename: String,
     },
 
     description: {
@@ -19,85 +13,43 @@ const jobSchema = new mongoose.Schema(
       required: true,
     },
 
+    image: {
+      url: String,
+      filename: String,
+    },
+
     workType: {
       type: String,
       required: true,
-      enum: ["Masonry", "Plumbing", "Electrical", "Painting", "Carpentry", "Other"]
-    },
-
-    buildingType: {
-      type: String,
-      required: true,
-      enum: ["Independent House", "Apartment", "Commercial"]
-    },
-
-    floors: {
-      type: Number,
-      required: true,
-      min: 1
-    },
-
-    areaSqFt: {
-      type: Number,
-      required: true,
-      min: 100
-    },
-
-    city: {
-      type: String,
-      required: true,
+      enum: ["Masonry", "Plumbing", "Electrical", "Painting", "Carpentry", "Other"],
       index: true
     },
 
-    area: {
-      type: String,
-      required: true
+    location: {
+      city: { type: String, index: true },
+      area: { type: String }
     },
 
-    landmark: {
-      type: String
-    },
-
-    workersRequired: {
-      type: Number,
-      required: true,
-      min: 1
-    },
-
-    skillLevel: {
-      type: String,
-      required: true,
-      enum: ["Helper", "Skilled", "Supervisor"]
-    },
-
-    // -------- PAYMENT --------
     wagePerDay: {
       type: Number,
       required: true,
-      min: 100
+      min: 100,
+      index: true
     },
 
     paymentType: {
       type: String,
-      required: true,
-      enum: ["Daily", "Weekly", "Contract"]
-    },
-
-    foodProvided: {
-      type: Boolean,
-      default: false
-    },
-
-    // -------- TIMELINE --------
-    startDate: {
-      type: Date,
+      enum: ["Daily", "Weekly", "Contract"],
       required: true
     },
 
-    durationDays: {
+    workersRequired: {
       type: Number,
-      required: true,
-      min: 1
+      default: 1
+    },
+
+    startDate: {
+      type: Date
     },
 
     postedBy: {
@@ -113,17 +65,30 @@ const jobSchema = new mongoose.Schema(
       index: true
     },
 
-    applications:[{
-      applicant: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-      status: { type: String, enum: ["Applied", "Accepted", "Rejected"], default: "Applied" }
-    }]
+    customFields: [
+      {
+        label: String,
+        value: String
+      }
+    ],
+
+    applications: [
+      {
+        applicant: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User"
+        },
+        status: {
+          type: String,
+          enum: ["Applied", "Accepted", "Rejected", "Completed"],
+          default: "Applied"
+        }
+      }
+    ]
   },
-  {
-    timestamps: true // adds createdAt & updatedAt
-  }
+  { timestamps: true }
 );
 
-// -------- COMPOUND INDEX (IMPORTANT) --------
-jobSchema.index({ city: 1, workType: 1, isActive: 1 });
+jobSchema.index({ "location.city": 1, workType: 1, isActive: 1 });
 
 module.exports = mongoose.model("Job", jobSchema);
