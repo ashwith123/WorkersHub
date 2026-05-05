@@ -1,22 +1,35 @@
 
 <body>
 
-    <h1>Listings</h1>
+<div class="profile-page-title">
+  <h1>Available Works</h1>
+  <p>Browse and apply for jobs near you</p>
+</div>    
+  <div class="listing-container">
+    <% for (let listing of allListings) { %>
 
-    <% if (user && user.role === "BUILDER") { %>
-    <form action="/addListing" method="get">
-        <button type="submit">Add New Listing</button>
-    </form>
+      <a href="/listings/<%= listing._id %>" class="card-link">
+
+        <div class="listing-card">
+          <img
+            src="<%= listing.image ? listing.image.url : 'https://images.unsplash.com/photo-1525596662741-e94ff9f26de1?q=80&w=1587&auto=format&fit=crop' %>"
+            alt="image"
+            onerror="this.onerror=null;this.src='https://res.cloudinary.com/dzfbgnkd8/image/upload/v1753116111/Listings/levv55sniaizmgvcaxis.png';"
+          />
+
+          <div class="card-body">
+            <p>
+              <b><%= listing.title %></b><br>
+              <%= listing.location.city %>, <%= listing.location.state %><br>
+              ₹<%= listing.wagePerDay %><br>
+              <%= listing.description.substring(0, 100) %>
+            </p>
+          </div>
+        </div>
+
+      </a>
+
     <% } %>
+  </div>
 
-        <h1>role of user is <%= user.role %></h1>
-
-
-    <h1><% if (user) { %>Welcome, <%= user.name %>!<% } else { %>Please log in to view listings.<% } %></h1>
-    <ul>
-        <% listings.forEach(function(listing) { %>
-        <li><a href="/listings/<%= listing.id %>"><%= listing.title %></a></li>
-        <% }); %>
-    </ul>
-    
-</body>
+</body> 

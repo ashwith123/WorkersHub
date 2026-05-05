@@ -20,6 +20,7 @@ const { storage } = require("./lib/cloudinary");
 const upload = multer({ storage });
 
 app.use(methodOverride('_method'));
+app.use(express.static("public"));
 app.use(expressLayouts);
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -39,7 +40,7 @@ app.use((req, res, next) => {
 
 app.get("/",requireAuth,async (req,res)=>{
     const allListings = await Listing.find();
-    res.render("./listings/index" ,{listings:allListings});
+    res.render("./listings/index" ,{allListings});
 });
 
 app.get("/login",(req,res)=>{
@@ -341,12 +342,21 @@ app.post("/listings/:id/apply", requireAuth, async (req, res) => {
 
     await listing.save();
 
-    res.redirect(`/listings/${listing._id}`);
+  res.render("listings/show", {
+      listing,
+      currUser: req.user,
+      success: "Successfully applied for this job!",
+      error: null
+    }); 
+
 
   } catch (err) {
     console.error(err);
-    res.status(500).render("error", {
-      message: "Something went wrong"
+      res.render("listings/show", {
+      listing: null,
+      currUser: req.user,
+      error: "Something went wrong",
+      success: null
     });
   }
 });

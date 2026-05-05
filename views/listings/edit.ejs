@@ -1,7 +1,7 @@
-<div class="row mt-4">
-  <div class="col-8 offset-2">
+<div class="edit-container">
+  <div class="edit-card">
 
-    <h1 class="mb-4">Edit Job Listing</h1>
+    <h1 class="edit-title">Edit Job Listing</h1>
 
     <form
       method="POST"
@@ -10,123 +10,46 @@
       novalidate
     >
 
-      <!-- TITLE -->
-      <div class="mb-3">
-        <label for="title" class="form-label">Job Title</label>
-        <input
-          type="text"
-          id="title"
-          name="job[title]"
-          class="form-control"
-          value="<%= listing.title %>"
-          required
-        />
-      </div>
+      <!-- BASIC -->
+      <div class="edit-section">
+        <div class="mb-3">
+          <label for="title">Job Title</label>
+          <input
+            type="text"
+            id="title"
+            name="job[title]"
+            class="form-control"
+            value="<%= listing.title %>"
+            required
+          />
+        </div>
 
-      <!-- DESCRIPTION -->
-      <div class="mb-3">
-        <label for="description" class="form-label">Description</label>
-        <textarea
-          id="description"
-          name="job[description]"
-          class="form-control"
-          rows="4"
-          required
-        ><%= listing.description %></textarea>
+        <div class="mb-3">
+          <label for="description">Description</label>
+          <textarea
+            id="description"
+            name="job[description]"
+            class="form-control"
+            rows="4"
+            required
+          ><%= listing.description %></textarea>
+        </div>
       </div>
 
       <!-- WORK TYPE -->
-      <div class="mb-3">
-        <label for="workType" class="form-label">Work Type</label>
-        <select
-          id="workType"
-          name="job[workType]"
-          class="form-select"
-          required
-        >
-          <% ["Masonry","Plumbing","Electrical","Painting","Carpentry","Other"].forEach(type => { %>
-            <option
-              value="<%= type %>"
-              <%= listing.workType === type ? "selected" : "" %>
-            >
-              <%= type %>
-            </option>
-          <% }) %>
-        </select>
-      </div>
-
-      <!-- LOCATION -->
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label for="city" class="form-label">City</label>
-          <input
-            type="text"
-            id="city"
-            name="job[location][city]"
-            class="form-control"
-            value="<%= listing.location?.city || '' %>"
-            required
-          />
-        </div>
-
-        <div class="col-md-6">
-          <label for="area" class="form-label">Area</label>
-          <input
-            type="text"
-            id="area"
-            name="job[location][area]"
-            class="form-control"
-            value="<%= listing.location?.area || '' %>"
-          />
-        </div>
-      </div>
-
-      <!-- WORKERS -->
-      <div class="mb-3">
-        <label for="workersRequired" class="form-label">
-          Workers Required
-        </label>
-        <input
-          type="number"
-          id="workersRequired"
-          name="job[workersRequired]"
-          class="form-control"
-          value="<%= listing.workersRequired || 1 %>"
-          min="1"
-        />
-      </div>
-
-      <!-- PAYMENT -->
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label for="wagePerDay" class="form-label">
-            Wage per Day (₹)
-          </label>
-          <input
-            type="number"
-            id="wagePerDay"
-            name="job[wagePerDay]"
-            class="form-control"
-            value="<%= listing.wagePerDay %>"
-            min="100"
-            required
-          />
-        </div>
-
-        <div class="col-md-6">
-          <label for="paymentType" class="form-label">
-            Payment Type
-          </label>
+      <div class="edit-section">
+        <div class="mb-3">
+          <label for="workType">Work Type</label>
           <select
-            id="paymentType"
-            name="job[paymentType]"
+            id="workType"
+            name="job[workType]"
             class="form-select"
             required
           >
-            <% ["Daily","Weekly","Contract"].forEach(type => { %>
+            <% ["Masonry","Plumbing","Electrical","Painting","Carpentry","Other"].forEach(type => { %>
               <option
                 value="<%= type %>"
-                <%= listing.paymentType === type ? "selected" : "" %>
+                <%= listing.workType === type ? "selected" : "" %>
               >
                 <%= type %>
               </option>
@@ -135,74 +58,153 @@
         </div>
       </div>
 
+      <!-- LOCATION -->
+      <div class="edit-section">
+        <div class="row">
+          <div class="col-md-6">
+            <label for="city">City</label>
+            <input
+              type="text"
+              id="city"
+              name="job[location][city]"
+              class="form-control"
+              value="<%= listing.location?.city || '' %>"
+              required
+            />
+          </div>
+
+          <div class="col-md-6">
+            <label for="area">Area</label>
+            <input
+              type="text"
+              id="area"
+              name="job[location][area]"
+              class="form-control"
+              value="<%= listing.location?.area || '' %>"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- WORKERS -->
+      <div class="edit-section">
+        <div class="mb-3">
+          <label for="workersRequired">Workers Required</label>
+          <input
+            type="number"
+            id="workersRequired"
+            name="job[workersRequired]"
+            class="form-control"
+            value="<%= listing.workersRequired || 1 %>"
+            min="1"
+          />
+        </div>
+      </div>
+
+      <!-- PAYMENT -->
+      <div class="edit-section">
+        <div class="row">
+          <div class="col-md-6">
+            <label for="wagePerDay">Wage per Day (₹)</label>
+            <input
+              type="number"
+              id="wagePerDay"
+              name="job[wagePerDay]"
+              class="form-control"
+              value="<%= listing.wagePerDay %>"
+              min="100"
+              required
+            />
+          </div>
+
+          <div class="col-md-6">
+            <label for="paymentType">Payment Type</label>
+            <select
+              id="paymentType"
+              name="job[paymentType]"
+              class="form-select"
+              required
+            >
+              <% ["Daily","Weekly","Contract"].forEach(type => { %>
+                <option
+                  value="<%= type %>"
+                  <%= listing.paymentType === type ? "selected" : "" %>
+                >
+                  <%= type %>
+                </option>
+              <% }) %>
+            </select>
+          </div>
+        </div>
+      </div>
+
       <!-- START DATE -->
-      <div class="mb-3">
-        <label for="startDate" class="form-label">
-          Start Date
-        </label>
-        <input
-          type="date"
-          id="startDate"
-          name="job[startDate]"
-          class="form-control"
-          value="<%= listing.startDate 
-                    ? listing.startDate.toISOString().split('T')[0] 
-                    : '' %>"
-        />
+      <div class="edit-section">
+        <div class="mb-3">
+          <label for="startDate">Start Date</label>
+          <input
+            type="date"
+            id="startDate"
+            name="job[startDate]"
+            class="form-control"
+            value="<%= listing.startDate 
+              ? listing.startDate.toISOString().split('T')[0] 
+              : '' %>"
+          />
+        </div>
       </div>
 
       <!-- CUSTOM FIELDS -->
-      <hr>
-      <h5>Additional Requirements</h5>
+      <div class="edit-section">
+        <h5>Additional Requirements</h5>
 
-      <% if (listing.customFields && listing.customFields.length > 0) { %>
-        <% listing.customFields.forEach((field, index) => { %>
+        <% if (listing.customFields && listing.customFields.length > 0) { %>
+          <% listing.customFields.forEach((field, index) => { %>
 
-          <div class="row mb-3 align-items-end">
-            <div class="col-md-5">
-              <label class="form-label">New Field</label>
-              <input
-                type="text"
-                class="form-control"
-                name="job[customFields][<%= index %>][label]"
-                value="<%= field.label %>"
-                required
-              />
+            <div class="row align-items-end custom-field mb-3">
+              <div class="col-md-5">
+                <label>Field Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="job[customFields][<%= index %>][label]"
+                  value="<%= field.label %>"
+                  required
+                />
+              </div>
+
+              <div class="col-md-5">
+                <label>Field Value</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="job[customFields][<%= index %>][value]"
+                  value="<%= field.value %>"
+                  required
+                />
+              </div>
+
+              <div class="col-md-2">
+                <button
+                  type="button"
+                  class="btn btn-danger w-100"
+                  onclick="this.closest('.row').remove()"
+                >
+                  Remove
+                </button>
+              </div>
             </div>
 
-            <div class="col-md-5">
-              <label class="form-label">Field Information</label>
-              <input
-                type="text"
-                class="form-control"
-                name="job[customFields][<%= index %>][value]"
-                value="<%= field.value %>"
-                required
-              />
-            </div>
-
-            <div class="col-md-2">
-              <button
-                type="button"
-                class="btn btn-danger w-100"
-                onclick="this.closest('.row').remove()"
-              >
-                Remove
-              </button>
-            </div>
-          </div>
-
-        <% }) %>
-      <% } else { %>
-        <p class="text-muted">No additional requirements added.</p>
-      <% } %>
+          <% }) %>
+        <% } else { %>
+          <p class="text-muted">No additional requirements added.</p>
+        <% } %>
+      </div>
 
       <!-- SUBMIT -->
-      <div class="mt-4">
-        <button class="btn btn-primary w-100">
-          Update Listing
-        </button>
-      </div>
+      <button class="update-btn w-100">
+        Update Listing
+      </button>
 
     </form>
   </div>

@@ -1,122 +1,119 @@
-<div class="row mt-4">
-  <div class="col-8 offset-2">
+<div class="show-container">
 
-    <!-- Title -->
-    <h1 class="mb-3"><%= listing.title %></h1>
+  <div class="show-card">
 
-    <div class="card shadow-sm">
-      <div class="card-body">
+    <!-- TITLE -->
+    <h1 class="show-title"><%= listing.title %></h1>
 
-        <!-- Image -->
-        <div class="mb-3 text-center">
-          <img 
-            src="<%= listing.image && listing.image.url 
-                  ? listing.image.url 
-                  : 'https://res.cloudinary.com/dzfbgnkd8/image/upload/v1771099002/Listings/wiz5nqn8zlf89vmpwz3i.png' %>" 
-            alt="Job image"
-            class="img-fluid rounded"
-            style="max-height: 350px; object-fit: cover;">
-        </div>
+    <!-- IMAGE -->
+    <div class="show-image">
+      <img 
+        src="<%= listing.image && listing.image.url 
+              ? listing.image.url 
+              : 'https://res.cloudinary.com/dzfbgnkd8/image/upload/v1771099002/Listings/wiz5nqn8zlf89vmpwz3i.png' %>" 
+        alt="Job image"
+      >
+    </div>
 
-        <ul class="list-unstyled">
+    <!-- META INFO -->
+    <div class="show-meta">
 
-          <!-- Posted By -->
-          <li class="mb-2">
-            <strong>Posted By:</strong>
-            <%= listing.postedBy ? listing.postedBy.username : "Unknown" %>
-          </li>
+      <!-- WORK TYPE -->
+       
+    <div class="meta-item">
+       <span>🛠️ Work Type</span>
+       <p><%= listing.workType %></p  >
+    </div>
 
-          <!-- Description -->
-          <li class="mb-2">
-            <strong>Description:</strong>
-            <%= listing.description %>
-          </li>
+      <div class="meta-item">
+        <span>👤 Posted By</span>
+        <p><%= listing.postedBy ? listing.postedBy.username : "Unknown" %></p>
+      </div>
 
-          <!-- Work Type -->
-          <li class="mb-2">
-            <strong>Work Type:</strong>
-            <%= listing.workType %>
-          </li>
+      <div class="meta-item">
+        <span>📍 Location</span>
+        <p>
+          <%= listing.location?.area || "" %>
+          <%= listing.location?.area ? "," : "" %>
+          <%= listing.location?.city || "Not specified" %>
+        </p>
+      </div>
 
-          <!-- Location -->
-          <li class="mb-2">
-            <strong>Location:</strong>
-            <%= listing.location?.area || "" %>
-            <%= listing.location?.area ? "," : "" %>
-            <%= listing.location?.city || "Not specified" %>
-          </li>
+      <div class="meta-item highlight">
+        <span>💰 Wage</span>
+        <p>₹<%= listing.wagePerDay %> / day (<%= listing.paymentType %>)</p>
+      </div>
 
-          <!-- Workers Required -->
-          <li class="mb-2">
-            <strong>Workers Required:</strong>
-            <%= listing.workersRequired || 1 %>
-          </li>
+      <div class="meta-item">
+        <span>👷 Workers required</span>
+        <p><%= listing.workersRequired || 1 %></p>
+      </div>
 
-          <!-- Wage -->
-          <li class="mb-2">
-            <strong>Wage:</strong>
-            ₹<%= listing.wagePerDay %> / day
-            (<%= listing.paymentType %>)
-          </li>
+      <div class="meta-item">
+        <span>📅 Start Date</span>
+        <p>
+          <%= listing.startDate 
+                ? listing.startDate.toDateString() 
+                : "Not specified" %>
+        </p>
+      </div>
 
-          <!-- Start Date -->
-          <li class="mb-2">
-            <strong>Start Date:</strong>
-            <%= listing.startDate 
-                  ? listing.startDate.toDateString() 
-                  : "Not specified" %>
-          </li>
+    </div>
 
-        </ul>
+    <!-- DESCRIPTION -->
+    <div class="show-section">
+      <h3>Description</h3>
+      <p><%= listing.description %></p>
+    </div>
 
-        <!-- Custom Fields -->
-        <% if (listing.customFields && listing.customFields.length > 0) { %>
-          <ul class="list-unstyled">
-            <% listing.customFields.forEach(field => { %>
-              <li class="mb-1">
-                <strong><%= field.label %>:</strong>
-                <%= field.value %>
-              </li>
-            <% }) %>
-          </ul>
-        <% } %>
+    
 
-        <!-- Owner Controls -->
-        <% if (
-          currUser &&
-          listing.postedBy &&
-          listing.postedBy._id.toString() === currUser._id.toString()
-        ) { %>
+    <!-- CUSTOM FIELDS -->
+    <% if (listing.customFields && listing.customFields.length > 0) { %>
+      <div class="show-section">
+        <h3>Additional Requirements</h3>
 
-          <hr>
-
-          <div class="d-flex gap-2">
-            <a href="/listings/<%= listing._id %>/edit" class="btn btn-warning">
-              Edit
-            </a>
-
-            <form 
-              action="/listings/<%= listing._id %>?_method=DELETE"
-              method="POST">
-              <button class="btn btn-danger">
-                Delete
-              </button>
-            </form>
+        <% listing.customFields.forEach(field => { %>
+          <div class="custom-item">
+            <strong><%= field.label %>:</strong>
+            <span><%= field.value %></span>
           </div>
-
-        <% } %>
-
-        <% if (currUser && currUser.role === "WORKER") { %>
-          <hr>
-          <form action="/listings/<%= listing._id %>/apply" method="POST">
-            <button class="btn btn-primary">
-              Apply for this Job
-            </button>
-          </form>
-        <% } %>
+        <% }) %>
 
       </div>
+    <% } %>
+
+    <!-- ACTIONS -->
+    <div class="show-actions">
+
+      <% if (
+        currUser &&
+        listing.postedBy &&
+        listing.postedBy._id.toString() === currUser._id.toString()
+      ) { %>
+
+        <a href="/listings/<%= listing._id %>/edit" class="btn-edit">
+          Edit
+        </a>
+
+        <form 
+          action="/listings/<%= listing._id %>?_method=DELETE"
+          method="POST">
+          <button class="btn-delete">Delete</button>
+        </form>
+
+      <% } %>
+
+      <% if (currUser && currUser.role === "WORKER") { %>
+        <form action="/listings/<%= listing._id %>/apply" method="POST">
+          <button class="btn-apply">
+            Apply for this Job
+          </button>
+        </form>
+      <% } %>
+
     </div>
 
   </div>
+
 </div>

@@ -2,134 +2,170 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Profile</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
-    }
-    .profile-header {
-      border-bottom: 1px solid #ddd;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-    }
-    .badge {
-      padding: 4px 8px;
-      background: #333;
-      color: white;
-      font-size: 12px;
-      border-radius: 4px;
-      margin-left: 8px;
-    }
-    .job-card {
-      border: 1px solid #ccc;
-      padding: 15px;
-      margin-bottom: 12px;
-      border-radius: 6px;
-    }
-    .job-actions a {
-      margin-right: 10px;
-      text-decoration: none;
-      color: blue;
-    }
-    .empty {
-      color: #777;
-      margin-top: 20px;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= user.username %>'s Profile</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 <body>
 
-  <!-- ================= PROFILE HEADER ================= -->
-  <div class="profile-header">
-    <h1>
-      <%= user.username %>
-      <span class="badge"><%= user.role %></span>
-    </h1>
-    <p>Member since: <%= user.createdAt.toDateString() %></p>
-      <img src="<%= user.profilePhoto.url %>" alt="Profile Picture" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;">
+  <div class="content-wrapper">
+    <div class="profile-container">
+      <div class="profile-page-title">
+  <h1>Your Profile</h1>
+  <p>Manage your account and activity</p>
+</div>
 
-    
-  
-  <h3>Bio</h3>
-  <p><%= user.bio || "No bio added yet." %></p>
+      <!-- ================= PROFILE HEADER ================= -->
+      <div class="profile-header">
+        <div class="profile-avatar-wrap">
+          <img 
+            src="<%= user.profilePhoto.url ? user.profilePhoto.url : 'https://images.unsplash.com/photo-1525596662741-e94ff9f26de1?q=80&w=1587&auto=format&fit=crop' %>"
+            alt="<%= user.username %>'s photo"
+          >
 
-  <%if(isOwner){%>
-    <a href="/profile/edit">
-    <button>Edit Profile</button>
-    <%}%>
-  </a>
+          <br>
+            <% if (isOwner) { %>
+            <a href="/profile/edit" class="edit-profile-btn">
+              <i class="fa-solid fa-pen"></i> Edit Profile
+            </a>
+          <% } %>
+        </div>
 
+        <div class="profile-info">
+          <div class="profile-name-row">
+            <h1><i class="fa-solid fa-user"></i> <%= user.username %></h1>
+            <span class="badge role-badge">
+              <% if (user.role === "BUILDER") { %>
+                <i class="fa-solid fa-hard-hat"></i> 
+              <% } else { %>
+                <i class="fa-solid fa-wrench"></i> 
+              <% } %>
+              <%= user.role %>
+            </span>
+          </div>
 
-  </div>
+          <p class="profile-since">
+            <i class="fa-regular fa-calendar"></i>
+            Member since <%= user.createdAt.toDateString() %>
+          </p>
 
-  <!-- ================= BUILDER VIEW ================= -->
-  <% if (user.role === "BUILDER") { %>
-    <h2>Your Job Listings</h2>
+          <p class="profile-bio">
+            <i class="fa-solid fa-quote-left"></i> 
+            <%= user.bio || "No bio added yet." %>
+          </p>
 
-    <% if (jobs.length === 0) { %>
-      <p class="empty">You haven’t posted any jobs yet.</p>
-    <% } %>
-
-    <% jobs.forEach(job => { %>
-      <div class="job-card">
-        <h3><%= job.title %></h3>
-        <p>
-          <strong>City:</strong> <%= job.city %> |
-          <strong>Work:</strong> <%= job.workType %>
-        </p>
-        <p>
-          <strong>Status:</strong>
-          <%= job.isActive ? "Active" : "Closed" %>
-        </p>
-        <p>
-          <strong>Applicants:</strong>
-          <%= job.applicants ? job.applicants.length : 0 %>
-        </p>
-
-        <div class="job-actions">
-          <a href="/listings/<%= job._id %>">View Job</a>
-          <a href="/listings/<%= job._id %>/applicants">View Applicants</a>
+          <div class="profile-stats">
+            <% if (user.role === "BUILDER") { %>
+              <div class="stat-pill">
+                <span class="stat-num"><i class="fa-solid fa-briefcase"></i> <%= jobs.length %></span>
+                <span class="stat-label">Jobs Posted</span>
+              </div>
+              <div class="stat-pill">
+                <span class="stat-num"><i class="fa-solid fa-bolt"></i> <%= jobs.filter(j => j.isActive).length %></span>
+                <span class="stat-label">Active</span>
+              </div>
+            <% } else { %>
+              <div class="stat-pill">
+                <span class="stat-num"><i class="fa-solid fa-circle-check"></i> <%= completed ? completed.length : 0 %></span>
+                <span class="stat-label">Jobs Done</span>
+              </div>
+            <% } %>
+          </div>
         </div>
       </div>
-    <% }) %>
-  <% } %>
 
-  <%if(user.role === "WORKER"){%>
+      <!-- ================= BUILDER VIEW ================= -->
+      <% if (user.role === "BUILDER") { %>
+        <div class="profile-section">
+          <h2 class="section-title">
+            <i class="fa-solid fa-briefcase"></i> Your Job Listings
+          </h2>
 
-  <!-- ================= WORKER VIEW ================= -->
-  <h2>Completed Jobs</h2>
+          <% if (jobs.length === 0) { %>
+            <div class="empty-state">
+              <i class="fa-solid fa-folder-open"></i>
+              <p>You haven't posted any jobs yet.</p>
+              <a href="/listings/new" class="empty-cta">Post Your First Job</a>
+            </div>
+          <% } %>
 
-<% if (!completed || completed.length === 0) { %>
-  <p class="empty">No completed jobs yet.</p>
-<% } %>
+          <div class="jobs-grid">
+            <% jobs.forEach(job => { %>
+              <div class="job-card">
+                <div class="job-card-header">
+                  <h3><%= job.title %></h3>
+                  <span class="status-badge <%= job.isActive ? 'active' : 'closed' %>">
+                    <%= job.isActive ? "Active" : "Closed" %>
+                  </span>
+                </div>
 
-<% completed.forEach(job => { %>
-  <% job.applications.forEach(app => { %>
-    <% if (app.applicant.equals(user._id) && app.status === "Completed") { %>
+                <div class="job-meta">
+                  <span><i class="fa-solid fa-location-dot"></i> <%= job.location.area %></span>
+                  <span><i class="fa-solid fa-hammer"></i> <%= job.workType %></span>
+                  <span><i class="fa-solid fa-users"></i> <%= job.applications ? job.applications.length : 0 %> Applicants</span>
+                </div>
 
-      <div class="job-card">
-        <h3><%= job.title %></h3>
-        <p>
-          <strong>Location:</strong> <%= job.city %>
-          <strong>Work:</strong> <%= job.workType %>
-        </p>
-        <p>
-          <strong>Skill:</strong> <%= job.skillLevel %>
-          <strong>Wage:</strong> ₹<%= job.wagePerDay %>/day
-        </p>
+                <div class="job-actions">
+                  <a href="/listings/<%= job._id %>"><i class="fa-solid fa-eye"></i> View Job</a>
+                  <a href="/listings/<%= job._id %>/applicants"><i class="fa-solid fa-user-group"></i> View Applicants</a>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      <% } %>
 
-        <p>
-          <strong>Duration:</strong> <%= job.durationDays %> days
-        </p>
+      <!-- ================= WORKER VIEW ================= -->
+      <% if (user.role === "WORKER") { %>
+        <div class="profile-section">
+          <h2 class="section-title">
+            <i class="fa-solid fa-circle-check"></i> Completed Jobs
+          </h2>
 
-      </div>
+          <%
+            let completedJobs = [];
+            if (completed && completed.length > 0) {
+              completed.forEach(job => {
+                job.applications.forEach(app => {
+                  if (app.applicant.equals(user._id) && app.status === "Completed") {
+                    completedJobs.push(job);
+                  }
+                });
+              });
+            }
+          %>
 
-    <% } %>
-  <% }) %>
-<% }) %>
+          <% if (completedJobs.length === 0) { %>
+            <div class="empty-state">
+              <i class="fa-solid fa-clipboard-check"></i>
+              <p>No completed jobs yet.</p>
+            </div>
+          <% } %>
 
-<% } %>
+          <div class="jobs-grid">
+            <% completedJobs.forEach(job => { %>
+              <div class="job-card completed-card">
+                <div class="job-card-header">
+                  <h3><%= job.title %></h3>
+                  <span class="status-badge completed">Completed</span>
+                </div>
+
+                <div class="job-meta">
+                  <span><i class="fa-solid fa-location-dot"></i> <%= job.city %></span>
+                  <span><i class="fa-solid fa-hammer"></i> <%= job.workType %></span>
+                  <span><i class="fa-solid fa-star"></i> <%= job.skillLevel %></span>
+                  <span><i class="fa-solid fa-indian-rupee-sign"></i> <%= job.wagePerDay %>/day</span>
+                  <span><i class="fa-regular fa-clock"></i> <%= job.durationDays %> days</span>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      <% } %>
+
+    </div>
+  </div>
 
 </body>
 </html>

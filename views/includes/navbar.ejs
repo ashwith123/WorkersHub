@@ -9,6 +9,12 @@
       <div class="navbar-nav ms-auto">
         <% if(user) {%>
           
+     <% if (user && user.role === "BUILDER") { %>
+    <form action="/addListing" method="get">
+        <button type="submit">Add New Listing</button>
+    </form>
+    <% } %>
+          
           <a class="nav-link" href="/profile">Profile</a>
         <a class="nav-link" href="/logout">logout</a>
         <%}else{%>
