@@ -10,7 +10,7 @@
         <% if(user) {%>
           
      <% if (user && user.role === "BUILDER") { %>
-    <form action="/addListing" method="get">
+    <form action="listings/addListing" method="get">
         <button type="submit">Add New Listing</button>
     </form>
     <% } %>
