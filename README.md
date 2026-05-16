@@ -47,8 +47,8 @@ Builders can post job opportunities, and workers can browse and apply for work.
 
 ### 3. Configure environment variables
 
-Create a `.env` file:
-JWT_SECRET=your_secret
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_KEY=your_key
-CLOUDINARY_SECRET=your_secret
+-Create a `.env` file:
+-JWT_SECRET=your_secret
+-CLOUDINARY_CLOUD_NAME=your_cloud_name
+-CLOUDINARY_KEY=your_key
+-CLOUDINARY_SECRET=your_secret
