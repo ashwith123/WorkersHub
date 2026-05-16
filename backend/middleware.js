@@ -24,14 +24,17 @@ const setCurrentUser = async (req, res, next) => {
 
 const requireAuth = (req, res, next) => {
   if (!req.user) {
-    return res.redirect("/login");
+    return res.status(401).json({
+      success:false,
+      msg:"usernot logged in",
+    })
   }
   next();
 };
 
 const isBuilder = async(req, res, next) => {
     if (!req.user || req.user.role !== "BUILDER") {
-        return res.status(403).send("Access denied. Builders only.");
+        return res.status(403).json({success:false,msg:"Access denied. Builders only."});
     }
     next();
 };
