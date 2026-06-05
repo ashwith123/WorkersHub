@@ -48,7 +48,7 @@
         secure: false      
       });
 
-      res.redirect("/");
+      res.redirect("/listings");
       }catch(err){
           console.log(err);
           return res.render("./user/login", { error: "server error" });
@@ -96,7 +96,7 @@
           secure: false      
         });
   
-        res.redirect("/");
+        res.redirect("/listings");
   
         }catch(err){
             console.log(err);
@@ -107,7 +107,7 @@
     
   router.get("/logout", (req, res) => {
     res.clearCookie("token");
-    res.redirect("./login");
+    res.redirect("/login");
   });
 
 module.exports = router;

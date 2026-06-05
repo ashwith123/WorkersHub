@@ -18,36 +18,97 @@
   const { storage } = require("../lib/cloudinary");
   const upload = multer({ storage });
 
+  async function getJobsByStatus(userId, status) {
+
+  let jobs = await Listing.find({
+    applications: {
+      $elemMatch: {
+        applicant: userId,
+        status: status
+      }
+    }
+  }).lean();
+
+  jobs.forEach(job => {
+    job.myApplication = job.applications.find(app =>
+      app.applicant.toString() === userId.toString() &&
+      app.status === status
+    );
+  });
+
+  return jobs;
+}
+
   router.get("/", requireAuth, async (req, res) => {
-    const user = req.user;
-    let jobs = [];
-    let completed=[];
+      const user = req.user;
+      let jobs = [];
+      let completedJobs = [];
+    let appliedJobs = [];
+    let acceptedJobs = [];
 
     if (user.role === "BUILDER") {
       jobs = await Listing.find({ postedBy: user._id });
     } 
     else if (user.role === "WORKER") {
-      jobs = await Listing.find({ "applications.applicant": user._id }).populate("applications.applicant");
-        // Completed jobs
-      completed = await Listing.find({
-        applications: {
-          $elemMatch: {
-            applicant: user._id,
-            status: "Completed"
-          }
-        }
-      }).lean();
 
-      completed.forEach(job => {
-        job.myApplication = job.applications.find(app =>
-          app.applicant.toString() === user._id.toString() &&
-          app.status === "Completed"
-        );
-      });
+  jobs = await Listing.find({
+    "applications.applicant": user._id
+  }).populate("applications.applicant");
+
+
+  // Completed Jobs
+   completedJobs = await Listing.find({
+    applications: {
+      $elemMatch: {
+        applicant: user._id,
+        status: "Completed"
+      }
     }
+  }).lean();
+
+  completedJobs.forEach(job => {
+    job.myApplication = job.applications.find(app =>
+      app.applicant.toString() === user._id.toString() &&
+      app.status === "Completed"
+    );
+  });
 
 
-    res.render("./listings/profile", { user, jobs,isOwner:true,completed });
+  // Applied Jobs
+  let appliedJobs = await Listing.find({
+    applications: {
+      $elemMatch: {
+        applicant: user._id,
+        status: "Applied"
+      }
+    }
+  }).lean();
+
+  appliedJobs.forEach(job => {
+    job.myApplication = job.applications.find(app =>
+      app.applicant.toString() === user._id.toString() &&
+      app.status === "Applied"
+    );
+  });
+
+  // Active Jobs
+   acceptedJobs = await getJobsByStatus(user._id, "Accepted");
+
+
+
+
+  
+}
+
+
+res.render("./listings/profile", {
+    user,
+    jobs,
+    isOwner: true,
+    completedJobs,
+    appliedJobs,
+    acceptedJobs
+  });
   });
 
   router.get("/edit", requireAuth, async (req, res) => {

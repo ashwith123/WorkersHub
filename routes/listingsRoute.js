@@ -89,7 +89,7 @@ router.get("/",requireAuth,async (req,res)=>{
       await newJob.save();
 
 
-      res.redirect("/");
+      res.redirect("/listings");
 
     } catch (error) {
       console.log(error);
@@ -201,7 +201,7 @@ router.get("/",requireAuth,async (req,res)=>{
 
       await Listing.findByIdAndDelete(req.params.id);
 
-      res.redirect("/");
+      res.redirect("/listings");
 
     } catch (err) {
       console.error(err);
